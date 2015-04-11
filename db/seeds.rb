@@ -6,10 +6,10 @@
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
-data = %w{cat chicken dog bird jackass}
-data.each do |x|
-  a = Animal.new
-  a.species = x
-  a.save
-  puts a.species
+data = %w{cat chicken dog goat pig}
+data.each do |item|
+  animal = Animal.new
+  animal.species = item
+  animal.save
+  puts animal.species
 end

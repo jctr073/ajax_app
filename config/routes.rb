@@ -1,7 +1,9 @@
 Rails.application.routes.draw do
+
   root 'pages#index'
   get  'msg' => 'pages#msg'
-  get  'animals' => 'pages#get_animals'
+  get  'animals' => 'pages#list_animals'
+  post 'animals' => 'pages#insert_animal'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

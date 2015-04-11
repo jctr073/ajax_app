@@ -1,13 +1,16 @@
-<h2 class="text-center">Ajax Example</h2>
+<h2 class="text-center">Ajax Sampler</h2>
 <div class="col-md-4">
   <p>
-    <button id="simple" type="button" class="btn btn-primary">Simple Ajax</button>
+    <button id="static" type="button" class="btn btn-primary">Ajax: static server data</button>
   </p>
   <p>
-    <button id="read" type="button" class="btn btn-info">Ajax read from database</button>
+    <button id="read" type="button" class="btn btn-info">Ajax: read from database</button>
   </p>
   <p>
-    <button type="button" class="btn btn-primary">Primary</button>
+    <button id="write" type="button" class="btn btn-success">Ajax: write to database</button>
+    <div class="form-group">
+      <input id="txtValue" class="form-control" type="text"/>
+    </div>
   </p>
 </div>
 <div class="col-md-4">
@@ -25,44 +28,60 @@
   $(document).ready(function(){
       var $output = $('#output');
 
-      $('#simple').click(function(){
-          $output.html(""); //Clear output
+      $('#static').click(function(){
+          $output.empty(); //Clear output
           $.ajax({
              type: "GET",
              url: "/msg.json",
              dataType: "json",
              success: function (response) {
-                 console.log(response); //show raw json object
-                 $output.html(
-                         response.from + "<br>" +
-                         response.msg
-                 );
+                 $output.html(response.msg);
              }
           });
       });
 
       $('#read').click(function(){
-         $output.html("");
-
+          //Get list of animals from database
+          $output.empty();
           $.ajax({
               type: "GET",
               url: "/animals.json",
               dataType: "json",
               success: function(response) {
-                  console.log(response);
-
-                  //create an unordered list in div#output
-                  $output.append('<ul id="list"></ul>');
-                  $ul = $('#list');
-
-                  for(var i = 0; i < response.length; i++) {
-                      $ul.append('<li>' + response[i].species + '</li>');
-
-                  }
+                  createHtmlList(response, $output);
               }
           });
       });
 
+      $('#write').click(function(){
+          //Post to and then read from database
+          inputValue = $('#txtValue').val();
 
+          if (inputValue != "") {
+              $output.empty();
+              $.ajax({
+                  type: "POST",
+                  url: "/animals.json",
+                  data: { animal: { species: inputValue } },
+                  dataType: "json",
+                  success: function(response) {
+                      createHtmlList(response, $output);
+                      $('#txtValue').val("");
+                  }
+              });
+          } else {
+              alert("Text field can't be empty.");
+          }
+      });
   });
+
+  function createHtmlList(objCollection, containerTag) {
+      containerTag.append('<ul id="list"></ul>');
+      $ul = $('#list');
+
+      for(var i = 0; i < objCollection.length; i++) {
+          var obj = objCollection[i];
+          $('<li></li>').appendTo($ul).html(obj.species);
+      }
+  }
 </script>
