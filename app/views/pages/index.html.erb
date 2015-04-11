@@ -1,0 +1,63 @@
+<h2 class="text-center">Hello Index</h2>
+<div class="col-md-4">
+  <p>
+    <button id="simple" type="button" class="btn btn-primary">Simple Ajax</button>
+  </p>
+  <p>
+    <button id="read" type="button" class="btn btn-info">Ajax read from database</button>
+  </p>
+  <p>
+    <button type="button" class="btn btn-primary">Primary</button>
+  </p>
+</div>
+<div class="col-md-4">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title">Output</h3>
+    </div>
+    <div class="panel-body">
+      <pre id="output">
+
+      </pre>
+    </div>
+  </div>
+</div>
+
+<script>
+  $(document).ready(function(){
+      var $output = $('#output');
+
+      $('#simple').click(function(){
+          $output.html(""); //Clear output
+          $.ajax({
+             type: "GET",
+             url: "/msg.json",
+             dataType: "json",
+             success: function (response) {
+                 console.log(response); //show raw json object
+                 $output.html(
+                         response.from + "\n" +
+                         response.msg
+                 );
+             }
+          });
+      });
+
+      $('#read').click(function(){
+         $output.html("");
+          $.ajax({
+              type: "GET",
+              url: "/animals.json",
+              dataType: "json",
+              success: function(response) {
+                  console.log(response);
+                  for(var i = 0; i < response.length; i++) {
+                      console.log(response[i].species);
+                  }
+              }
+          });
+      });
+
+
+  });
+</script>
